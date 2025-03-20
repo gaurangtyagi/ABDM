@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const axios = require('axios');
 const fetchHealthIdCert = require("../utils/encryptionKey");
+const crypto = require('crypto');
 const encryptData = require("../utils/encryptData");
 const { v4: uuidv4 } = require('uuid');
 

@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require('body-parser'); 
 
 const ABDMRoutes = require("./routes/ABDMRoutes");
+const VerificationRoutes = require("./routes/VerificationRoutes");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -33,6 +34,7 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api', ABDMRoutes); 
+app.use('/verify', VerificationRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

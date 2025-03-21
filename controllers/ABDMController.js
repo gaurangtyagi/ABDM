@@ -2,7 +2,6 @@ require("dotenv").config();
 
 const axios = require('axios');
 const fetchHealthIdCert = require("../utils/encryptionKey");
-const crypto = require('crypto');
 const encryptData = require("../utils/encryptData");
 const { v4: uuidv4 } = require('uuid');
 
@@ -154,10 +153,8 @@ const getProfile = async (req, res) => {
             responseType: 'arraybuffer' 
         });
 
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', 'inline; filename="abha-card.png"');
-
-        res.send(response.data);
+        const image = Buffer.from(response.data, 'binary').toString('base64');
+        res.status(200).json({ image });
     } catch (err) {
         res.status(500).json({ message: err.message }); 
     }

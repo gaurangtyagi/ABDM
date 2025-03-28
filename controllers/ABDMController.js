@@ -50,6 +50,10 @@ const sendOtp = async (req, res) => {
             return res.status(400).json({ message: "Please provide both aadhar and accessToken" });
         }
 
+        if (!/^\d{12}$/.test(aadhar)) {
+            return res.status(400).json({ message: "Invalid Aadhar number. It must be a 12-digit number." });
+        }
+
         const url = 'https://abhasbx.abdm.gov.in/abha/api/v3/enrollment/request/otp';
         const requestId = uuidv4();
         const timestamp = new Date().toISOString();
@@ -76,9 +80,16 @@ const sendOtp = async (req, res) => {
         console.log(data); 
         const response = await axios.post(url, data, { headers });
         
-        res.status(200).json(response.data);
+        res.status(response.status).json(response.data);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        console.error("Error sending OTP:", err);
+        if (err.response) {
+            return res.status(err.response.status).json({
+                message: err.response.data?.message || "Error from external API",
+                error: err.response.data
+            });
+        }
+        res.status(500).json({ message: err.message || "Internal Server Error" });
     }
 }
 
@@ -122,9 +133,16 @@ const verifyOtp = async (req, res) => {
         };
 
         const response = await axios.post(url, data, { headers });
-        return res.status(200).json(response.data);
+        res.status(response.status).json(response.data);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        console.error("Error verifying OTP:", err);
+        if (err.response) {
+            return res.status(err.response.status).json({
+                message: err.response.data?.message || "Error from external API",
+                error: err.response.data
+            });
+        }
+        res.status(500).json({ message: err.message || "Internal Server Error" });
     }
 }
 
@@ -157,7 +175,13 @@ const getProfile = async (req, res) => {
         const image = Buffer.from(response.data, 'binary').toString('base64');
         res.status(200).json({ image });
     } catch (err) {
-        res.status(500).json({ message: err.message }); 
+        if (err.response) {
+            return res.status(err.response.status).json({
+                message: err.response.data?.message || "Error from external API",
+                error: err.response.data
+            });
+        }
+        res.status(500).json({ message: err.message || "Internal Server Error" });
     }
 }
 

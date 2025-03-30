@@ -185,10 +185,70 @@ const getProfile = async (req, res) => {
     }
 }
 
+const getQR = async (req, res) => {
+    try {
+        console.log('qr'); 
+        const { accessToken, X_Token } = req.body; 
+        if (!accessToken || !X_Token) {
+            return res.status(400).json({ message: "Please provide both accessToken and X_Token" });
+        }
+        const abha_url = 'https://abhasbx.abdm.gov.in/abha/api/v3/profile/account/qrCode'; 
+        const headers = {
+            'X-Token': `Bearer ${X_Token}`,
+            'REQUEST-ID': crypto.randomUUID(),
+            'TIMESTAMP': new Date().toISOString(),
+            'Authorization': `Bearer ${accessToken}`
+        };
+        const response = await axios.get(abha_url, {
+            headers
+        });
+        res.status(200).json(response.data);
+    } catch (err) {
+        if (err.response) {
+            return res.status(err.response.status).json({
+                message: err.response.data?.message || "Error from external API",
+                error: err.response.data
+            });
+        }
+        res.status(500).json({ message: err.message || "Internal Server Error" });
+    }
+}
+
+const getAccount = async (req, res) => {
+    try {
+        console.log('account'); 
+        const { accessToken, X_Token } = req.body; 
+        if (!accessToken || !X_Token) {
+            return res.status(400).json({ message: "Please provide both accessToken and X_Token" });
+        }
+        const abha_url = 'https://abhasbx.abdm.gov.in/abha/api/v3/profile/account'; 
+        const headers = {
+            'X-Token': `Bearer ${X_Token}`,
+            'REQUEST-ID': crypto.randomUUID(),
+            'TIMESTAMP': new Date().toISOString(),
+            'Authorization': `Bearer ${accessToken}`
+        };
+        const response = await axios.get(abha_url, {
+            headers
+        });
+        res.status(200).json(response.data);
+    } catch (err) {
+        if (err.response) {
+            return res.status(err.response.status).json({
+                message: err.response.data?.message || "Error from external API",
+                error: err.response.data
+            });
+        }
+        res.status(500).json({ message: err.message || "Internal Server Error" });
+    }
+}
+
 
 module.exports = {
     fetchAccessToken,
     sendOtp,
     verifyOtp,
-    getProfile
+    getProfile,
+    getQR,
+    getAccount
 }

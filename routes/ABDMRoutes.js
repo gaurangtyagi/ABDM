@@ -8,6 +8,8 @@ router.get("/access-token", ABDMController.fetchAccessToken);
 router.post("/send-otp", ABDMController.sendOtp);
 router.post("/verify-otp", ABDMController.verifyOtp);
 router.post("/profile", ABDMController.getProfile);
+router.post("/profile/qr", ABDMController.getQR);
+router.post("/profile/account", ABDMController.getAccount);
 
 router.put('/update/profile-picture', uploadbuffer.fields([
     { name: 'photo', maxCount: 1 },

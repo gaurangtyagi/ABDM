@@ -200,9 +200,13 @@ const getQR = async (req, res) => {
             'Authorization': `Bearer ${accessToken}`
         };
         const response = await axios.get(abha_url, {
-            headers
+            headers,
+            responseType: 'arraybuffer' 
         });
-        res.status(200).json(response.data);
+
+        const base64QR = Buffer.from(response.data).toString('base64');
+
+        res.status(200).json({ qrCode: base64QR });
     } catch (err) {
         if (err.response) {
             return res.status(err.response.status).json({
